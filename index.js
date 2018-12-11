@@ -43,7 +43,8 @@ const client = amazon.createClient({
  
 
 exports.handler = function(event, context, callback) {
-    const id = event.productId;
+    //const id = event.productId;
+    const id = "B07HH9P7B9";
     
     client.itemLookup({
         idType: 'ASIN',

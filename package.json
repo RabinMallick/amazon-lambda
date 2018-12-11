@@ -15,7 +15,7 @@
     "request": "^2.74.0"
   },
   "scripts": {
-    "test": "mocha ./test --recursive",
+    "test": "mocha test",
     "start": "node index.js"
   },
   "author": "",
