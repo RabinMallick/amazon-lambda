@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Test Result: no test specified\" && exit 1"
+    "test": "mocha ./test --recursive"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +14,10 @@
     "aws-sdk": "^2.373.0",
     "cheerio": "^1.0.0-rc.2",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2",
+    "request": "^2.74.0"
   }
 }
