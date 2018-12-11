@@ -1,9 +1,7 @@
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-const request = require('request');
 const requestPro = require('request-promise');
 const cheerio = require('cheerio');
 const amazon = require('amazon-product-api');
-const fs = require('fs');
 
 const docClient = new AWS.DynamoDB.DocumentClient({
     region: 'us-east-2'
