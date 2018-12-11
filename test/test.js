@@ -1,9 +1,29 @@
-const assert = require('assert');
+'use strict';
+const myHandler = require('../lambdaHandler');
+const chai = require('chai');
+const expect = chai.expect;
+const chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
 
-describe('Array', function() {
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal(-1, [1,2].indexOf(4));
-    });
+describe('myHandler.handler should return with expected statusCodes', () => {
+
+it('should return a 200 statusCode', (done) => {
+  try{ 
+  myHandler.handler(event, {
+    succeed : (data) => {
+      expect(data).to.eventually.have.property('statusCode');
+      expect(data.statusCode).to.eventually.equal(200);
+      done();
+    },
+    fail : (data) => {
+      expect(data).to.have.property('statusCode');
+      done();
+    },
   });
+  } catch(err){
+    done(err.message);
+  }
+});
+
+
 });

@@ -1,23 +1,23 @@
 {
-  "name": "WebClient",
+  "name": "amazon_api",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "mocha ./test --recursive"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "main": "index.js",
   "dependencies": {
     "amazon-product-api": "^0.4.4",
-    "aws-sdk": "^2.373.0",
+    "chai-as-promised": "^7.1.1",
     "cheerio": "^1.0.0-rc.2",
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.0.2",
+    "mocha": "^3.5.3",
     "request": "^2.74.0"
-  }
+  },
+  "scripts": {
+    "test": "mocha ./test --recursive",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
 }
