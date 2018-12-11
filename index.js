@@ -75,12 +75,17 @@ exports.handler = function(event, context, callback) {
                 body: JSON.stringify( resObject )
               };
 
-            callback(null, responseObject); 
+            //callback(null, responseObject); 
         });
     
     }).catch(function (err) {
-        callback(err, null)
+        //callback(err, null)
     });    
 
-   
+    const responseObject = {
+        statusCode: 200,
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify( "body" )
+      };
+    callback(null, responseObject); 
 }
