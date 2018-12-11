@@ -64,104 +64,106 @@ exports.handler = (event, context, callback) => {
     }
 
 
-    docClient.query(queryParams, function (err, data) {
+    // docClient.query(queryParams, function (err, data) {
 
-        if (err) {
-            console.log(queryParams);
-            callback(err, null);
-        } else {
+    //     if (err) {
+    //         console.log(queryParams);
+    //         callback(err, null);
+    //     } else {
 
-            client.itemLookup({
-                idType: 'ASIN',
-                itemId:  data.Items[0].product_id,
-                domain: 'webservices.amazon.co.uk',
-                responseGroup: 'ItemAttributes,Offers,Images,Reviews'
-            }).then(function (results) {
+    //         client.itemLookup({
+    //             idType: 'ASIN',
+    //             itemId:  data.Items[0].product_id,
+    //             domain: 'webservices.amazon.co.uk',
+    //             responseGroup: 'ItemAttributes,Offers,Images,Reviews'
+    //         }).then(function (results) {
 
-                const reviewUrl = results[0].CustomerReviews[0].IFrameURL[0];
-                const ratingPromise = webCrawler(reviewUrl);
+    //             const reviewUrl = results[0].CustomerReviews[0].IFrameURL[0];
+    //             const ratingPromise = webCrawler(reviewUrl);
 
-                ratingPromise.then((response) => {
-                    //const price = getNumber(results[0].ItemAttributes[0].ListPrice[0].FormattedPrice[0]);
-                    const price = getNumber(results[0].OfferSummary[0].LowestNewPrice[0].FormattedPrice[0]);
-                    const resObject = {
-                        merchant: "AMAZON",
-                        title: results[0].ItemAttributes[0].Title[0],
-                        price: parseFloat(price),
-                        currency: results[0].ItemAttributes[0].ListPrice[0].CurrencyCode[0],
-                        seller_name: results[0].ItemAttributes[0].Publisher[0],
-                        rating: response || 0,
-                        img_url: results[0].LargeImage[0].URL[0],
-                        aff_link: results[0].DetailPageURL[0],
-                        product_id: data.Items[0].product_id,
-                    }
+    //             ratingPromise.then((response) => {
+    //                 //const price = getNumber(results[0].ItemAttributes[0].ListPrice[0].FormattedPrice[0]);
+    //                 const price = getNumber(results[0].OfferSummary[0].LowestNewPrice[0].FormattedPrice[0]);
+    //                 const resObject = {
+    //                     merchant: "AMAZON",
+    //                     title: results[0].ItemAttributes[0].Title[0],
+    //                     price: parseFloat(price),
+    //                     currency: results[0].ItemAttributes[0].ListPrice[0].CurrencyCode[0],
+    //                     seller_name: results[0].ItemAttributes[0].Publisher[0],
+    //                     rating: response || 0,
+    //                     img_url: results[0].LargeImage[0].URL[0],
+    //                     aff_link: results[0].DetailPageURL[0],
+    //                     product_id: data.Items[0].product_id,
+    //                 }
 
-                    const succeedParams =
-                    {
-                        TableName: "TagflixMashUP",
-                        Key: {
-                            "merchant": "AMAZON",
-                            "tagflix_id": data.Items[0].tagflix_id
-                        },
-                        UpdateExpression: "set updated_at = :u, title = :t, last_update_status = :ls , price = :p,  currency = :c, seller_name = :s, rating = :r,  img_url = :i, aff_link = :a,  product_id = :pid ",
-                        ExpressionAttributeValues: {
-                            ":u": time,
-                            ":ls": "SUCCESS",
-                            ":t": resObject.title,
-                            ":p": resObject.price,
-                            ":c": resObject.currency,
-                            ":s": resObject.seller_name,
-                            ":r": resObject.rating,
-                            ":i": resObject.img_url,
-                            ":a": resObject.aff_link,
-                            ":pid": resObject.product_id
-                        },
-                        ReturnValues: "UPDATED_NEW"
-                    };
+    //                 const succeedParams =
+    //                 {
+    //                     TableName: "TagflixMashUP",
+    //                     Key: {
+    //                         "merchant": "AMAZON",
+    //                         "tagflix_id": data.Items[0].tagflix_id
+    //                     },
+    //                     UpdateExpression: "set updated_at = :u, title = :t, last_update_status = :ls , price = :p,  currency = :c, seller_name = :s, rating = :r,  img_url = :i, aff_link = :a,  product_id = :pid ",
+    //                     ExpressionAttributeValues: {
+    //                         ":u": time,
+    //                         ":ls": "SUCCESS",
+    //                         ":t": resObject.title,
+    //                         ":p": resObject.price,
+    //                         ":c": resObject.currency,
+    //                         ":s": resObject.seller_name,
+    //                         ":r": resObject.rating,
+    //                         ":i": resObject.img_url,
+    //                         ":a": resObject.aff_link,
+    //                         ":pid": resObject.product_id
+    //                     },
+    //                     ReturnValues: "UPDATED_NEW"
+    //                 };
 
-                    let failedParams =
-                    {
-                        TableName: "TagflixMashUP",
-                        Key: {
-                            "merchant": "AMAZON",
-                            "tagflix_id": data.Items[0].tagflix_id
-                        },
-                        UpdateExpression: "set last_update_status = :ls",
-                        ExpressionAttributeValues: {
-                            ":ls": "FAILED"
-                        },
-                        ReturnValues: "UPDATED_NEW"
-                    };
+    //                 let failedParams =
+    //                 {
+    //                     TableName: "TagflixMashUP",
+    //                     Key: {
+    //                         "merchant": "AMAZON",
+    //                         "tagflix_id": data.Items[0].tagflix_id
+    //                     },
+    //                     UpdateExpression: "set last_update_status = :ls",
+    //                     ExpressionAttributeValues: {
+    //                         ":ls": "FAILED"
+    //                     },
+    //                     ReturnValues: "UPDATED_NEW"
+    //                 };
 
-                    docClient.update(succeedParams, function (err, updateData) {
-                        if (err) {
-                            console.log(updateData);
-                            docClient.update(failedParams, function (failErr, failData) {
-                                if (failErr) {
-                                    console.log(failErr);
-                                    callback(failErr, null);
-                                } else {
-                                    console.log(failData);
-                                    callback(null, failData);
-                                }
-                            });
-                            callback(err, null);
-                        } else {
-                            console.log(succeedParams);
-                            callback(null, updateData);
-                        }
-                    });
+    //                 docClient.update(succeedParams, function (err, updateData) {
+    //                     if (err) {
+    //                         console.log(updateData);
+    //                         docClient.update(failedParams, function (failErr, failData) {
+    //                             if (failErr) {
+    //                                 console.log(failErr);
+    //                                 callback(failErr, null);
+    //                             } else {
+    //                                 console.log(failData);
+    //                                 callback(null, failData);
+    //                             }
+    //                         });
+    //                         callback(err, null);
+    //                     } else {
+    //                         console.log(succeedParams);
+    //                         callback(null, updateData);
+    //                     }
+    //                 });
 
-                    //return resObject;
-                });
+    //                 //return resObject;
+    //             });
 
-            }).catch(function (err) {
-                return err;
-            });
+    //         }).catch(function (err) {
+    //             return err;
+    //         });
 
-            //callback(null, data);
+    //         //callback(null, data);
 
-        }
-    });
+    //     }
+    // });
+
+    callback(5);
 
 };
