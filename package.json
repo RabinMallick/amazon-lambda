@@ -1,3 +1,4 @@
+
 {
   "name": "amazon_api",
   "version": "1.0.0",
@@ -15,7 +16,7 @@
     "request": "^2.74.0"
   },
   "scripts": {
-    "test": "mocha test",
+    "test": "mocha --timeout 5000",
     "start": "node index.js"
   },
   "author": "",

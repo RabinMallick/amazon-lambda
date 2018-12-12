@@ -43,8 +43,7 @@ const client = amazon.createClient({
  
 
 exports.handler = function(event, context, callback) {
-    //const id = event.productId;
-    const id = "B07HH9P7B9";
+    const id = event.productId;
     
     client.itemLookup({
         idType: 'ASIN',
@@ -76,18 +75,10 @@ exports.handler = function(event, context, callback) {
                 body: JSON.stringify( resObject )
               };
 
-            //callback(null, responseObject); 
+            return callback(null, responseObject); 
         });
     
     }).catch(function (err) {
-        //callback(err, null)
+        return callback(err, null)
     });    
-
-    const responseObject = {
-        statusCode: 200,
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify( "body" )
-      };
-    //callback(null, responseObject); 
-    return responseObject;
 }
