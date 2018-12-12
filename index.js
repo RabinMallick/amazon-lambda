@@ -88,5 +88,6 @@ exports.handler = function(event, context, callback) {
         headers: { "Content-type": "application/json" },
         body: JSON.stringify( "body" )
       };
-    callback(null, responseObject); 
+    //callback(null, responseObject); 
+    return responseObject;
 }
