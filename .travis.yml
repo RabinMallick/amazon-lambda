@@ -6,9 +6,7 @@ env:
   global:
 
     - AWS_ACCESS_KEY_ID=AKIAIH3VDIBXISAH2LOQ
-
     - AWS_DEFAULT_REGION=us-east-2
-    
     - LAMBDA_NAME=lambda_handler
     #- LAMBDA_DESCRIPTION=...
     - LAMBDA_TIMEOUT=...
